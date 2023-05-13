@@ -44,6 +44,10 @@ const userSchema=new Schema({
     enum: ['active', 'inactive', 'requestSent', 'requestReceived'],
     default: 'active'
   },
+  friends: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   posts:[{type:mongoose.Types.ObjectId,ref:'Post'}]
 })
 
