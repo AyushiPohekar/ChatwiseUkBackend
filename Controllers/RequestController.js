@@ -64,6 +64,7 @@ export const getFriendRequestByUser=async(req,res)=>{
 
 export const AcceptfriendRequest=async(req,res)=>{
   try {
+    const {_id}=req.user
     const { requestId } = req.params;
 
    
@@ -80,10 +81,11 @@ export const AcceptfriendRequest=async(req,res)=>{
     // Get the sender and receiver information
     const sender = await User.findById(request1.sender);
     const receiver = await User.findById(request1.receiver);
-
+   
      // Update the friends arrays of sender and receiver
-     sender.friends.push(receiver._id);
-     receiver.friends.push(sender._id);
+
+     sender.friends.push({receiver:receiver._id,author:_id});
+     receiver.friends.push({sender:sender._id,author:_id});
  
      await sender.save();
      await receiver.save();

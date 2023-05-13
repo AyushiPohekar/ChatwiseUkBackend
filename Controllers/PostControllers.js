@@ -255,7 +255,7 @@ export const getbyfriends = async (req, res) => {
     const friends1 = user.friends;
     console.log(friends1.toLocaleString());
     // Find posts from the friends of the user
-    const posts = await Post.find({ friends: { $in: friends1 } });
+    const posts = await Post.find({ author: { $in: friends1 } });
 
     res.status(200).json({ posts });
   } catch (error) {
