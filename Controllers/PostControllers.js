@@ -56,9 +56,6 @@ export const addPost = async (req, res) => {
   }
 };
 
-
-
-
 export const updatePost = async (req, res) => {
   try {
     const { postId } = req.params;
@@ -172,14 +169,13 @@ export const addComment = async (req, res) => {
   }
 };
 
-
 //updateComment
 export const updateComment = async (req, res) => {
   try {
     const { postId, commentId } = req.params;
     const { userId, content } = req.body;
-   
-    console.log(userId)
+
+    console.log(userId);
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -187,7 +183,7 @@ export const updateComment = async (req, res) => {
     }
 
     const comment = post.comments.id(commentId); //finding comment of particularid
-    console.log(comment.userId.toHexString())
+    console.log(comment.userId.toHexString());
     if (!comment) {
       return res.status(404).json({ error: "Comment not found." });
     }
@@ -211,59 +207,59 @@ export const updateComment = async (req, res) => {
 
 //deleteComment
 export const deleteComment = async (req, res) => {
-    try {
-        const { postId, commentId } = req.params;
-        
-        const { userId } = req.body;
-        const post = await Post.findById(postId);
+  try {
+    const { postId, commentId } = req.params;
 
-        if (!post) {
-          return res.status(404).json({ error: 'Post not found.' });
-        }
-        const comment = post.comments.id(commentId);
+    const { userId } = req.body;
+    const post = await Post.findById(postId);
 
-        if (!comment) {
-          return res.status(404).json({ error: 'Comment not found.' });
-        }
-    
-    
-        if (comment.userId.toHexString() !== userId) {
-          return res.status(403).json({ error: 'You are not allowed to delete this comment.' });//user has created comment or not
-        }
-    
-        // const commentIndex = post.comments.indexOf(commentId);
-        post.comments.splice(commentId, 1);
-        await post.save();
-    
-        res.status(200).json(post);    
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to delete the comment.' });
+    if (!post) {
+      return res.status(404).json({ error: "Post not found." });
     }
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found." });
+    }
+
+    if (comment.userId.toHexString() !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not allowed to delete this comment." }); //user has created comment or not
+    }
+
+    // const commentIndex = post.comments.indexOf(commentId);
+    post.comments.splice(commentId, 1);
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete the comment." });
+  }
 };
 
-
 //get friends post
-export const getbyfriends=async(req,res)=>{
+export const getbyfriends = async (req, res) => {
   try {
-    const {_id}=req.user;
-console.log(_id)
- // Find the user by ID
- const user = await User.findById(_id);
+    const { _id } = req.user;
+    console.log(_id);
+    // Find the user by ID
+    const user = await User.findById(_id);
 
- if (!user) {
-   return res.status(404).json({ error: 'User not found.' });
- }
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
 
- // Get the friends of the user
- const friends = user.friends;
+    // Get the friends of the user
+    const friends1 = user.friends;
+    console.log(friends1.toLocaleString());
+    // Find posts from the friends of the user
+    const posts = await Post.find({ friends: { $in: friends1 } });
 
- // Find posts from the friends of the user
- const posts = await Post.find({ author: { $in: friends } });
-
- res.status(200).json({ posts });
+    res.status(200).json({ posts });
   } catch (error) {
-    
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve posts from friends." });
   }
-
-}
+};

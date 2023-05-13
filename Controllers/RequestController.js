@@ -52,20 +52,7 @@ export const getFriendRequestByUser=async(req,res)=>{
       return res.status(404).json({ error: 'No friend requests found for the user.' });
     }
  res.status(200).json(requests);
-    // // Get the usernames of senders and receivers
-    // const requestsWithUsernames = await Promise.all(requests.map(async (request1) => {
-    //   const sender = await User.findById(request1.sender);
-    //   const receiver = await User.findById(request1.receiver);
-
-    //   return {
-    //     requestId: request1._id,
-    //     sender: sender.username,
-    //     receiver: receiver.username,
-    //     status: request1.status
-    //   };
-    // }));
-
-    // res.status(200).json({ friendRequests: requestsWithUsernames });
+  
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to retrieve friend requests.' });
