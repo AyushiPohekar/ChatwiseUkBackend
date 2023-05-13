@@ -94,6 +94,14 @@ export const AcceptfriendRequest=async(req,res)=>{
     const sender = await User.findById(request1.sender);
     const receiver = await User.findById(request1.receiver);
 
+     // Update the friends arrays of sender and receiver
+     sender.friends.push(receiver._id);
+     receiver.friends.push(sender._id);
+ 
+     await sender.save();
+     await receiver.save();
+ 
+
     res.status(200).json({
       message: 'Friend request accepted successfully.',
       sender: sender.username,

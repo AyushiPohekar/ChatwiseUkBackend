@@ -56,6 +56,9 @@ export const addPost = async (req, res) => {
   }
 };
 
+
+
+
 export const updatePost = async (req, res) => {
   try {
     const { postId } = req.params;
@@ -238,3 +241,29 @@ export const deleteComment = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete the comment.' });
     }
 };
+
+
+//get friends post
+export const getbyfriends=async(req,res)=>{
+  try {
+    const {_id}=req.user;
+console.log(_id)
+ // Find the user by ID
+ const user = await User.findById(_id);
+
+ if (!user) {
+   return res.status(404).json({ error: 'User not found.' });
+ }
+
+ // Get the friends of the user
+ const friends = user.friends;
+
+ // Find posts from the friends of the user
+ const posts = await Post.find({ author: { $in: friends } });
+
+ res.status(200).json({ posts });
+  } catch (error) {
+    
+  }
+
+}
